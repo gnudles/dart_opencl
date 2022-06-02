@@ -1,5 +1,7 @@
-import 'package:opencl/opencl.dart';
+
 import 'dart:developer';
+
+import 'package:opencl/opencl.dart';
 
 // To use simply pass your object to it
 

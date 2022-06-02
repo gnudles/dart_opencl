@@ -11,6 +11,20 @@ import 'package:ffi/ffi.dart' as ffilib;
 
 /// OpenCL
 
+const androidLibPaths = [
+  "/system/lib64/libOpenCL.so",
+  "/system/vendor/lib64/libOpenCL.so",
+  "/system/vendor/lib64/egl/libGLES_mali.so",
+  "/system/vendor/lib64/libPVROCL.so",
+  "/data/data/org.pocl.libs/files/lib64/libpocl.so",
+  "/system/lib/libOpenCL.so",
+  "/system/vendor/lib/libOpenCL.so",
+  "/system/vendor/lib/egl/libGLES_mali.so",
+  "/system/vendor/lib/libPVROCL.so",
+  "/data/data/org.pocl.libs/files/lib/libpocl.so",
+  "libOpenCL.so"
+];
+
 class OpenCL {
   late final ffi.DynamicLibrary openCLDynLib;
   late final clGetPlatformIDs_dart clGetPlatformIDs;
@@ -38,9 +52,21 @@ class OpenCL {
     } else if (io.Platform.isWindows) {
       libraryPath = 'OpenCL.dll';
     }
+    bool successfullyLoaded = false;
+    if (io.Platform.isAndroid) {
+      for (String path in androidLibPaths) {
+        try {
+          openCLDynLib = ffi.DynamicLibrary.open(path);
+          successfullyLoaded = true;
+          break;
+        } catch (e) {}
+      }
+    }
 
     try {
-      openCLDynLib = ffi.DynamicLibrary.open(libraryPath);
+      if (!successfullyLoaded) {
+        openCLDynLib = ffi.DynamicLibrary.open(libraryPath);
+      }
       clGetPlatformIDs = openCLDynLib
           .lookup<ffi.NativeFunction<clGetPlatformIDs_c>>('clGetPlatformIDs')
           .asFunction<clGetPlatformIDs_dart>();
@@ -87,8 +113,7 @@ class OpenCL {
               'clReleaseCommandQueue')
           .asFunction<clRetainReleaseCommandQueue_dart>();
       clCreateBuffer = openCLDynLib
-          .lookup<ffi.NativeFunction<clCreateBuffer_c>>(
-              'clCreateBuffer')
+          .lookup<ffi.NativeFunction<clCreateBuffer_c>>('clCreateBuffer')
           .asFunction<clCreateBuffer_dart>();
     } catch (e) {
       loadingError = true;
