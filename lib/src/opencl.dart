@@ -40,8 +40,12 @@ class OpenCL {
       clCreateCommandQueueWithProperties;
   late final clRetainReleaseCommandQueue_dart clRetainCommandQueue;
   late final clRetainReleaseCommandQueue_dart clReleaseCommandQueue;
+  late final clRetainReleaseCommandQueue_dart clFlush;
+  late final clRetainReleaseCommandQueue_dart clFinish;
 
   late final clCreateBuffer_dart clCreateBuffer;
+  late final clRetainReleaseMemObject_dart clRetainMemObject;
+  late final clRetainReleaseMemObject_dart clReleaseMemObject;
 
   bool loadingError = false;
 
@@ -112,9 +116,24 @@ class OpenCL {
           .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>(
               'clReleaseCommandQueue')
           .asFunction<clRetainReleaseCommandQueue_dart>();
+      clFlush = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>(
+              'clFlush')
+          .asFunction<clRetainReleaseCommandQueue_dart>();
+      clFinish = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>(
+              'clFinish')
+          .asFunction<clRetainReleaseCommandQueue_dart>();
       clCreateBuffer = openCLDynLib
           .lookup<ffi.NativeFunction<clCreateBuffer_c>>('clCreateBuffer')
           .asFunction<clCreateBuffer_dart>();
+      clRetainMemObject = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>('clRetainMemObject')
+          .asFunction<clRetainReleaseMemObject_dart>();
+      clReleaseMemObject = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>('clReleaseMemObject')
+          .asFunction<clRetainReleaseMemObject_dart>();
+
     } catch (e) {
       loadingError = true;
       return;

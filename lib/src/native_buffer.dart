@@ -16,6 +16,9 @@ class NativeBuffer {
   late final Int8List _dartList;
   NativeBuffer(int size) : ptr = ffilib.calloc.allocate(size) {
     _dartList = ptr.asTypedList(size);
+    if (ptr.address == 0) {
+      throw ArgumentError("allocation failed.");
+    }
   }
   void free() {
     ffilib.calloc.free(ptr);

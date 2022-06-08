@@ -9,17 +9,17 @@ import 'package:opencl/src/constants.dart';
 
 import 'package:ffi/ffi.dart' as ffilib;
 
-class Mem {
-  ffi.Pointer<clMemStruct> mem;
+class Program {
+  ffi.Pointer<clProgramStruct> program;
   OpenCL dcl;
-  Mem(this.mem, this.dcl);
+  Program(this.program, this.dcl);
   void retain() {
-    int ret = dcl.clRetainMemObject(mem);
+    int ret = dcl.clRetainProgram(program);
     assert(ret == CL_SUCCESS);
   }
 
   void release() {
-    int ret = dcl.clReleaseMemObject(mem);
+    int ret = dcl.clReleaseProgram(program);
     assert(ret == CL_SUCCESS);
   }
 }

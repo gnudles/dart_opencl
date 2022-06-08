@@ -21,4 +21,15 @@ class CommandQueue {
     int ret = dcl.clReleaseCommandQueue(commandQueue);
     assert(ret == CL_SUCCESS);
   }
+  void flush() {
+    int ret = dcl.clReleaseCommandQueue(commandQueue);
+    assert(ret == CL_SUCCESS);
+  }
+  void finish() {
+    int ret = dcl.clReleaseCommandQueue(commandQueue);
+    assert(ret == CL_SUCCESS);
+  }
+
+  cl_int clFlush (cl_command_queue command_queue)
+  cl_int clFinish (cl_command_queue command_queue)
 }

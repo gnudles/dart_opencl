@@ -148,14 +148,32 @@ const CL_DEVICE_DEVICE_ENQUEUE_CAPABILITIES = 0x1070;
 const CL_DEVICE_PIPE_SUPPORT = 0x1071;
 const CL_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED = 0x1072;
 
+const CL_FP_DENORM = (1 << 0);
+const CL_FP_INF_NAN = (1 << 1);
+const CL_FP_ROUND_TO_NEAREST = (1 << 2);
+const CL_FP_ROUND_TO_ZERO = (1 << 3);
+const CL_FP_ROUND_TO_INF = (1 << 4);
+const CL_FP_FMA = (1 << 5);
 
-const CL_FP_DENORM                               = (1 << 0);
-const CL_FP_INF_NAN                              = (1 << 1);
-const CL_FP_ROUND_TO_NEAREST                     = (1 << 2);
-const CL_FP_ROUND_TO_ZERO                        = (1 << 3);
-const CL_FP_ROUND_TO_INF                         = (1 << 4);
-const CL_FP_FMA                                  = (1 << 5);
+const CL_FP_SOFT_FLOAT = (1 << 6);
 
-const CL_FP_SOFT_FLOAT                           = (1 << 6);
+const CL_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT = (1 << 7);
 
-const CL_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT        = (1 << 7);
+/* cl_mem_flags and cl_svm_mem_flags - bitfield */
+const CL_MEM_READ_WRITE = (1 << 0);
+const CL_MEM_WRITE_ONLY = (1 << 1);
+const CL_MEM_READ_ONLY = (1 << 2);
+const CL_MEM_USE_HOST_PTR = (1 << 3);
+const CL_MEM_ALLOC_HOST_PTR = (1 << 4);
+const CL_MEM_COPY_HOST_PTR = (1 << 5);
+/* reserved                                        (1 << 6)    */
+// CL_VERSION_1_2
+const CL_MEM_HOST_WRITE_ONLY = (1 << 7);
+const CL_MEM_HOST_READ_ONLY = (1 << 8);
+const CL_MEM_HOST_NO_ACCESS = (1 << 9);
+
+//CL_VERSION_2_0
+const CL_MEM_SVM_FINE_GRAIN_BUFFER =
+    (1 << 10); /* used by cl_svm_mem_flags only */
+const CL_MEM_SVM_ATOMICS = (1 << 11); /* used by cl_svm_mem_flags only */
+const CL_MEM_KERNEL_READ_AND_WRITE = (1 << 12);

@@ -106,9 +106,9 @@ typedef clCreateCommandQueueWithProperties_dart = ffi.Pointer<clCommandQueueStru
     ffi.Pointer<ffi.Int32> errcode_ret);
 
 typedef clRetainReleaseCommandQueue_c = ffi.Int32 Function(
-    ffi.Pointer<clCommandQueueStruct> context);
+    ffi.Pointer<clCommandQueueStruct> command_queue);
 typedef clRetainReleaseCommandQueue_dart = int Function(
-    ffi.Pointer<clCommandQueueStruct> context);
+    ffi.Pointer<clCommandQueueStruct> command_queue);
 
 typedef clCreateBuffer_c = ffi.Pointer<clMemStruct> Function(
     ffi.Pointer<clContextStruct> context,
@@ -123,4 +123,8 @@ typedef clCreateBuffer_dart = ffi.Pointer<clMemStruct> Function(
     ffi.Pointer<ffi.Void> host_ptr,
     ffi.Pointer<ffi.Int32> errcode_ret);
 
+typedef clRetainReleaseMemObject_c = ffi.Int32 Function(
+    ffi.Pointer<clMemStruct> memobj);
+typedef clRetainReleaseMemObject_dart = int Function(
+    ffi.Pointer<clMemStruct> memobj);
 
