@@ -20,6 +20,8 @@ Currently under development. WIP.
 
 Implemented features: partial device & platform query.
 
+Can run a simple vector add program.
+
 ## Features
 
 It can query information about your computing platforms, such as your GPU.

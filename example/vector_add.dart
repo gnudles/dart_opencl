@@ -18,26 +18,7 @@ const LIST_SIZE = 1024;
 void main() {
   final OpenCL cl = OpenCL();
   List<Platform> platforms = cl.getPlatforms();
-  platforms.forEach((platform) {
-    print("Platform ${platform.name}:");
-    print(platform.vendor);
-    print(platform.version);
-    print(platform.profile);
-    print(platform.extensions);
-    print(platform.hostTimerResolution);
-    platform.devices.forEach((device) {
-      print("Device ${device.name}");
-      print("Maximum compute units: ${device.maxComputeUnits}");
-      print(device.profile);
-      print(device.type);
-      print(device.vendor);
-      print(device.extensions);
-      print(device.toJson());
-      var timer = device.getDeviceAndHostTimer();
-      print(timer.deviceTimeStamp);
-      print(timer.hostTimeStamp);
-    });
-  });
+
   Context context = cl.createContext(platforms[0].devices);
   CommandQueue queue = context.createCommandQueue(platforms[0].devices[0]);
   NativeBuffer aBuf = NativeBuffer(4 * LIST_SIZE);

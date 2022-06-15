@@ -60,9 +60,6 @@ class Context {
       throw ArgumentError("size must be greater than zero");
     }
     int flags = 0;
-    if ((onlyCopy || hostData == null) && (hostRead || hostWrite))
-      throw ArgumentError(
-          "setting onlyCopy or providing a non-null hostData forbids setting hostRead or hostWrite");
     if (onlyCopy) {
       if (hostData == null) {
         throw ArgumentError(
