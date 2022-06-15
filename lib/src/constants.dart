@@ -1,4 +1,4 @@
-const CL_SUCCESS = 0;
+
 
 const CL_DEVICE_TYPE_DEFAULT = (1 << 0);
 const CL_DEVICE_TYPE_CPU = (1 << 1);
@@ -177,3 +177,102 @@ const CL_MEM_SVM_FINE_GRAIN_BUFFER =
     (1 << 10); /* used by cl_svm_mem_flags only */
 const CL_MEM_SVM_ATOMICS = (1 << 11); /* used by cl_svm_mem_flags only */
 const CL_MEM_KERNEL_READ_AND_WRITE = (1 << 12);
+
+
+/* cl_command_queue_info */
+const CL_QUEUE_CONTEXT                           = 0x1090;
+const CL_QUEUE_DEVICE                            = 0x1091;
+const CL_QUEUE_REFERENCE_COUNT                   = 0x1092;
+const CL_QUEUE_PROPERTIES                        = 0x1093;
+//CL_VERSION_2_0
+const CL_QUEUE_SIZE                              = 0x1094;
+
+//CL_VERSION_2_1
+const CL_QUEUE_DEVICE_DEFAULT                    = 0x1095;
+
+
+
+const CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE     = (1 << 0);
+const CL_QUEUE_PROFILING_ENABLE                  = (1 << 1);
+//CL_VERSION_2_0
+const CL_QUEUE_ON_DEVICE                         = (1 << 2);
+const CL_QUEUE_ON_DEVICE_DEFAULT                 = (1 << 3);
+
+/* Error Codes */
+
+const CL_SUCCESS                                  = 0;
+const CL_DEVICE_NOT_FOUND                         = -1;
+const CL_DEVICE_NOT_AVAILABLE                     = -2;
+const CL_COMPILER_NOT_AVAILABLE                   = -3;
+const CL_MEM_OBJECT_ALLOCATION_FAILURE            = -4;
+const CL_OUT_OF_RESOURCES                         = -5;
+const CL_OUT_OF_HOST_MEMORY                       = -6;
+const CL_PROFILING_INFO_NOT_AVAILABLE             = -7;
+const CL_MEM_COPY_OVERLAP                         = -8;
+const CL_IMAGE_FORMAT_MISMATCH                    = -9;
+const CL_IMAGE_FORMAT_NOT_SUPPORTED               = -10;
+const CL_BUILD_PROGRAM_FAILURE                    = -11;
+const CL_MAP_FAILURE                              = -12;
+// CL_VERSION_1_1
+const CL_MISALIGNED_SUB_BUFFER_OFFSET             = -13;
+const CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST = -14;
+// 
+// CL_VERSION_1_2
+const CL_COMPILE_PROGRAM_FAILURE                  = -15;
+const CL_LINKER_NOT_AVAILABLE                     = -16;
+const CL_LINK_PROGRAM_FAILURE                     = -17;
+const CL_DEVICE_PARTITION_FAILED                  = -18;
+const CL_KERNEL_ARG_INFO_NOT_AVAILABLE            = -19;
+// 
+
+const CL_INVALID_VALUE                            = -30;
+const CL_INVALID_DEVICE_TYPE                      = -31;
+const CL_INVALID_PLATFORM                         = -32;
+const CL_INVALID_DEVICE                           = -33;
+const CL_INVALID_CONTEXT                          = -34;
+const CL_INVALID_QUEUE_PROPERTIES                 = -35;
+const CL_INVALID_COMMAND_QUEUE                    = -36;
+const CL_INVALID_HOST_PTR                         = -37;
+const CL_INVALID_MEM_OBJECT                       = -38;
+const CL_INVALID_IMAGE_FORMAT_DESCRIPTOR          = -39;
+const CL_INVALID_IMAGE_SIZE                       = -40;
+const CL_INVALID_SAMPLER                          = -41;
+const CL_INVALID_BINARY                           = -42;
+const CL_INVALID_BUILD_OPTIONS                    = -43;
+const CL_INVALID_PROGRAM                          = -44;
+const CL_INVALID_PROGRAM_EXECUTABLE               = -45;
+const CL_INVALID_KERNEL_NAME                      = -46;
+const CL_INVALID_KERNEL_DEFINITION                = -47;
+const CL_INVALID_KERNEL                           = -48;
+const CL_INVALID_ARG_INDEX                        = -49;
+const CL_INVALID_ARG_VALUE                        = -50;
+const CL_INVALID_ARG_SIZE                         = -51;
+const CL_INVALID_KERNEL_ARGS                      = -52;
+const CL_INVALID_WORK_DIMENSION                   = -53;
+const CL_INVALID_WORK_GROUP_SIZE                  = -54;
+const CL_INVALID_WORK_ITEM_SIZE                   = -55;
+const CL_INVALID_GLOBAL_OFFSET                    = -56;
+const CL_INVALID_EVENT_WAIT_LIST                  = -57;
+const CL_INVALID_EVENT                            = -58;
+const CL_INVALID_OPERATION                        = -59;
+const CL_INVALID_GL_OBJECT                        = -60;
+const CL_INVALID_BUFFER_SIZE                      = -61;
+const CL_INVALID_MIP_LEVEL                        = -62;
+const CL_INVALID_GLOBAL_WORK_SIZE                 = -63;
+// CL_VERSION_1_1
+const CL_INVALID_PROPERTY                         = -64;
+// 
+// CL_VERSION_1_2
+const CL_INVALID_IMAGE_DESCRIPTOR                 = -65;
+const CL_INVALID_COMPILER_OPTIONS                 = -66;
+const CL_INVALID_LINKER_OPTIONS                   = -67;
+const CL_INVALID_DEVICE_PARTITION_COUNT           = -68;
+// 
+// CL_VERSION_2_0
+const CL_INVALID_PIPE_SIZE                        = -69;
+const CL_INVALID_DEVICE_QUEUE                     = -70;
+// 
+// CL_VERSION_2_2
+const CL_INVALID_SPEC_ID                          = -71;
+const CL_MAX_SIZE_RESTRICTION_EXCEEDED            = -72;
+// 

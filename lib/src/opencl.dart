@@ -47,6 +47,28 @@ class OpenCL {
   late final clRetainReleaseMemObject_dart clRetainMemObject;
   late final clRetainReleaseMemObject_dart clReleaseMemObject;
 
+  late final clRetainReleaseProgram_dart clRetainProgram;
+  late final clRetainReleaseProgram_dart clReleaseProgram;
+
+  late final clCreateProgramWithSource_dart clCreateProgramWithSource;
+  late final clBuildProgram_dart clBuildProgram;
+
+  late final clCreateKernel_dart clCreateKernel;
+
+  late final clRetainReleaseKernel_dart clRetainKernel;
+  late final clRetainReleaseKernel_dart clReleaseKernel;
+
+  late final clSetKernelArg_dart clSetKernelArg;
+
+  late final clEnqueueNDRangeKernel_dart clEnqueueNDRangeKernel;
+  late final clEnqueueWriteBuffer_dart clEnqueueWriteBuffer;
+  late final clEnqueueReadBuffer_dart clEnqueueReadBuffer;
+  late final clEnqueueCopyBuffer_dart clEnqueueCopyBuffer;
+  late final clEnqueueFillBuffer_dart clEnqueueFillBuffer;
+
+  late final clRetainReleaseEvent_dart clReleaseEvent;
+  late final clRetainReleaseEvent_dart clRetainEvent;
+
   bool loadingError = false;
 
   OpenCL() {
@@ -117,23 +139,84 @@ class OpenCL {
               'clReleaseCommandQueue')
           .asFunction<clRetainReleaseCommandQueue_dart>();
       clFlush = openCLDynLib
-          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>(
-              'clFlush')
+          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>('clFlush')
           .asFunction<clRetainReleaseCommandQueue_dart>();
       clFinish = openCLDynLib
-          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>(
-              'clFinish')
+          .lookup<ffi.NativeFunction<clRetainReleaseCommandQueue_c>>('clFinish')
           .asFunction<clRetainReleaseCommandQueue_dart>();
       clCreateBuffer = openCLDynLib
           .lookup<ffi.NativeFunction<clCreateBuffer_c>>('clCreateBuffer')
           .asFunction<clCreateBuffer_dart>();
       clRetainMemObject = openCLDynLib
-          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>('clRetainMemObject')
+          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>(
+              'clRetainMemObject')
           .asFunction<clRetainReleaseMemObject_dart>();
       clReleaseMemObject = openCLDynLib
-          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>('clReleaseMemObject')
+          .lookup<ffi.NativeFunction<clRetainReleaseMemObject_c>>(
+              'clReleaseMemObject')
           .asFunction<clRetainReleaseMemObject_dart>();
 
+      clRetainProgram = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseProgram_c>>(
+              'clRetainProgram')
+          .asFunction<clRetainReleaseProgram_dart>();
+      clReleaseProgram = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseProgram_c>>(
+              'clReleaseProgram')
+          .asFunction<clRetainReleaseProgram_dart>();
+
+      clCreateProgramWithSource = openCLDynLib
+          .lookup<ffi.NativeFunction<clCreateProgramWithSource_c>>(
+              'clCreateProgramWithSource')
+          .asFunction<clCreateProgramWithSource_dart>();
+      clBuildProgram = openCLDynLib
+          .lookup<ffi.NativeFunction<clBuildProgram_c>>('clBuildProgram')
+          .asFunction<clBuildProgram_dart>();
+
+      clCreateKernel = openCLDynLib
+          .lookup<ffi.NativeFunction<clCreateKernel_c>>('clCreateKernel')
+          .asFunction<clCreateKernel_dart>();
+
+      clRetainKernel = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseKernel_c>>('clRetainKernel')
+          .asFunction<clRetainReleaseKernel_dart>();
+      clReleaseKernel = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseKernel_c>>(
+              'clReleaseKernel')
+          .asFunction<clRetainReleaseKernel_dart>();
+
+      clSetKernelArg = openCLDynLib
+          .lookup<ffi.NativeFunction<clSetKernelArg_c>>('clSetKernelArg')
+          .asFunction<clSetKernelArg_dart>();
+
+      clEnqueueNDRangeKernel = openCLDynLib
+          .lookup<ffi.NativeFunction<clEnqueueNDRangeKernel_c>>(
+              'clEnqueueNDRangeKernel')
+          .asFunction<clEnqueueNDRangeKernel_dart>();
+
+       clEnqueueWriteBuffer = openCLDynLib
+          .lookup<ffi.NativeFunction<clEnqueueWriteBuffer_c>>(
+              'clEnqueueWriteBuffer')
+          .asFunction<clEnqueueWriteBuffer_dart>();
+      clEnqueueReadBuffer = openCLDynLib
+          .lookup<ffi.NativeFunction<clEnqueueReadBuffer_c>>(
+              'clEnqueueReadBuffer')
+          .asFunction<clEnqueueReadBuffer_dart>();
+      clEnqueueCopyBuffer = openCLDynLib
+          .lookup<ffi.NativeFunction<clEnqueueCopyBuffer_c>>(
+              'clEnqueueCopyBuffer')
+          .asFunction<clEnqueueCopyBuffer_dart>();
+      clEnqueueFillBuffer = openCLDynLib
+          .lookup<ffi.NativeFunction<clEnqueueFillBuffer_c>>(
+              'clEnqueueFillBuffer')
+          .asFunction<clEnqueueFillBuffer_dart>();
+
+      clReleaseEvent = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseEvent_c>>('clReleaseEvent')
+          .asFunction<clRetainReleaseEvent_dart>();
+      clRetainEvent = openCLDynLib
+          .lookup<ffi.NativeFunction<clRetainReleaseEvent_c>>('clRetainEvent')
+          .asFunction<clRetainReleaseEvent_dart>();
     } catch (e) {
       loadingError = true;
       return;

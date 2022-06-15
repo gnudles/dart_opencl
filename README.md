@@ -14,6 +14,8 @@ and the Flutter guide for
 
 This is a wrapper of the OpenCL library for the Dart programming language.
 
+It is tailored toward desktop environments, currently tested only for linux.
+
 Currently under development. WIP.
 
 Implemented features: partial device & platform query.

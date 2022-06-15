@@ -10,6 +10,7 @@ import 'package:opencl/src/constants.dart';
 import 'package:ffi/ffi.dart' as ffilib;
 import 'package:opencl/src/mem.dart';
 import 'package:opencl/src/native_buffer.dart';
+import 'package:opencl/src/program.dart';
 
 class Context {
   ffi.Pointer<clContextStruct> context;
@@ -27,15 +28,26 @@ class Context {
     assert(ret == CL_SUCCESS);
   }
 
-  CommandQueue createCommandQueue(Device device) {
+  CommandQueue createCommandQueue(Device device, {bool outOfOrder = false}) {
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
+    ffi.Pointer<ffi.UnsignedLong> properties =
+        ffilib.calloc<ffi.UnsignedLong>(3).cast();
+    int last_property = 0;
+    if (outOfOrder) {
+      properties[0] = CL_QUEUE_PROPERTIES;
+      properties[1] = CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+      last_property = 2;
+    }
+    properties[last_property] = 0;
     var commandQueue = dcl.clCreateCommandQueueWithProperties(
-        context, device.device, ffi.nullptr, errcode_ret);
+        context, device.device, properties, errcode_ret);
     assert(errcode_ret.value == CL_SUCCESS);
 
     ffilib.calloc.free(errcode_ret);
+    ffilib.calloc.free(properties);
     return CommandQueue(commandQueue, dcl);
   }
+
   /// size in bytes.
   Mem createBuffer(int size,
       {NativeBuffer? hostData,
@@ -71,29 +83,49 @@ class Context {
     } else if (hostRead) {
       flags |= CL_MEM_HOST_READ_ONLY;
     }
-    if (kernelRead && kernelWrite)
-    {
+    if (kernelRead && kernelWrite) {
       flags |= CL_MEM_READ_WRITE;
-    }
-    else
-    {
-      if (kernelRead)
-        flags |= CL_MEM_READ_ONLY;
-      if (kernelWrite)
-        flags |= CL_MEM_WRITE_ONLY;
+    } else {
+      if (kernelRead) flags |= CL_MEM_READ_ONLY;
+      if (kernelWrite) flags |= CL_MEM_WRITE_ONLY;
     }
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
 
-    ffi.Pointer<clMemStruct> memPtr = dcl.clCreateBuffer(
-    this.context,
-    flags,
-    size,
-    hostData?.ptr.cast() ?? ffi.nullptr,
-    errcode_ret);
+    ffi.Pointer<clMemStruct> memPtr = dcl.clCreateBuffer(this.context, flags,
+        size, hostData?.ptr.cast() ?? ffi.nullptr, errcode_ret);
     assert(errcode_ret.value == CL_SUCCESS);
 
     ffilib.calloc.free(errcode_ret);
 
     return Mem(memPtr, dcl);
+  }
+
+  Program createProgramWithSource(List<String> strings) {
+    List<ffi.Pointer<ffilib.Utf8>> nativeStrings =
+        strings.map((e) => e.toNativeUtf8()).toList();
+
+    int count = nativeStrings.length;
+    ffi.Pointer<ffi.Pointer<ffilib.Utf8>> stringsPtr =
+        ffilib.calloc<ffi.Pointer<ffilib.Utf8>>(count).cast();
+    ffi.Pointer<ffi.Size> lengthsPtr = ffilib.calloc<ffi.Size>(count).cast();
+    for (int i = 0; i < count; ++i) {
+      stringsPtr[i] = nativeStrings[i];
+      lengthsPtr[i] = strings[i].length;
+    }
+    ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
+
+    ffi.Pointer<clProgramStruct> program = dcl.clCreateProgramWithSource(
+        this.context, count, stringsPtr.cast(), lengthsPtr, errcode_ret);
+
+    assert(errcode_ret.value == CL_SUCCESS);
+
+    ffilib.calloc.free(errcode_ret);
+
+    nativeStrings.forEach((element) {
+      ffilib.calloc.free(element);
+    });
+    ffilib.calloc.free(stringsPtr);
+    ffilib.calloc.free(lengthsPtr);
+    return Program(program, dcl);
   }
 }
