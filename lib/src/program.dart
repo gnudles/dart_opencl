@@ -23,8 +23,12 @@ class Program {
     int ret = dcl.clReleaseProgram(program);
     assert(ret == CL_SUCCESS);
   }
-
-  int buildProgram(List<Device> devices, String options) {
+  /// Builds the program. (wraps clBuildProgram)
+  /// 
+  /// Please read the manual of clBuildProgram.
+  /// The build logs will be appended to the supplied buildLogs list.
+  int buildProgram(
+      List<Device> devices, String options, List<String> buildLogs) {
     ffi.Pointer<ffi.Pointer<clDeviceIdStruct>> devices_handles =
         ffilib.calloc<ffi.Pointer<clDeviceIdStruct>>(devices.length);
     for (int i = 0; i < devices.length; ++i) {
@@ -33,6 +37,21 @@ class Program {
     ffi.Pointer<ffilib.Utf8> nativeOptions = options.toNativeUtf8();
     int errcode = dcl.clBuildProgram(this.program, devices.length,
         devices_handles, nativeOptions.cast(), ffi.nullptr, ffi.nullptr);
+    if (errcode == CL_BUILD_PROGRAM_FAILURE) {
+      const LOG_SIZE = 4096;
+      ffi.Pointer<ffilib.Utf8> build_log =
+          ffilib.calloc<ffi.Char>(LOG_SIZE).cast();
+      ffi.Pointer<ffi.Size> ret_size = ffilib.calloc<ffi.Size>().cast();
+
+      for (var device in devices) {
+        dcl.clGetProgramBuildInfo(this.program, device.device,
+            CL_PROGRAM_BUILD_LOG, LOG_SIZE, build_log.cast(), ret_size);
+
+        buildLogs.add(build_log.toDartString());
+      }
+      ffilib.calloc.free(ret_size);
+      ffilib.calloc.free(build_log);
+    }
 
     ffilib.calloc.free(devices_handles);
     ffilib.calloc.free(nativeOptions);

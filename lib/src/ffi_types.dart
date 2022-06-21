@@ -310,3 +310,44 @@ typedef clEnqueueCopyBuffer_dart = int Function(
     int num_events_in_wait_list,
     ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list,
     ffi.Pointer<ffi.Pointer<clEventStruct>> event);
+
+typedef clEnqueueWaitForEvents_c =  ffi.Int32 Function(
+  ffi.Pointer<clCommandQueueStruct> command_queue,
+    ffi.UnsignedInt num_events_in_wait_list,
+    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list);
+
+typedef clEnqueueWaitForEvents_dart = int Function(
+    ffi.Pointer<clCommandQueueStruct> command_queue,
+    int num_events_in_wait_list,
+    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list);
+
+
+typedef clEnqueueBarrier_c =  ffi.Int32 Function(
+  ffi.Pointer<clCommandQueueStruct> command_queue);
+
+typedef clEnqueueBarrier_dart = int Function(
+    ffi.Pointer<clCommandQueueStruct> command_queue);
+
+typedef clEnqueueMarker_c =  ffi.Int32 Function(
+  ffi.Pointer<clCommandQueueStruct> command_queue,
+  ffi.Pointer<ffi.Pointer<clEventStruct>> event);
+
+typedef clEnqueueMarker_dart = int Function(
+    ffi.Pointer<clCommandQueueStruct> command_queue,
+    ffi.Pointer<ffi.Pointer<clEventStruct>> event);
+
+typedef clGetProgramBuildInfo_c =  ffi.Int32 Function(
+  ffi.Pointer<clProgramStruct> program,
+  ffi.Pointer<clDeviceIdStruct> device,
+  ffi.Uint32 param_name,
+  ffi.Size param_value_size,
+  ffi.Pointer<ffi.Void> param_value,
+  ffi.Pointer<ffi.Size> param_value_size_ret);
+
+typedef clGetProgramBuildInfo_dart = int Function(
+  ffi.Pointer<clProgramStruct> program,
+  ffi.Pointer<clDeviceIdStruct> device,
+  int param_name,
+  int param_value_size,
+  ffi.Pointer<ffi.Void> param_value,
+  ffi.Pointer<ffi.Size> param_value_size_ret);

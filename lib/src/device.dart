@@ -22,6 +22,8 @@ const deviceTypeMap = {
   CL_DEVICE_TYPE_CUSTOM: DeviceType.CUSTOM
 };
 
+enum DeviceMemCacheType { None, ReadOnlyCache, ReadWriteCache }
+
 class Device {
   ffi.Pointer<clDeviceIdStruct> device;
   OpenCL dcl;
@@ -124,6 +126,23 @@ class Device {
   ///Masked CL_​DEVICE_​DOUBLE_​FP_​CONFIG
   bool dblSoftFloat;
 
+  DeviceMemCacheType globalMemCacheType;
+
+  int globalMemCachelineSize;
+
+  int globalMemCacheSize;
+
+  int globalMemSize;
+
+  int maxConstantBufferSize;
+
+  int maxConstantArgs;
+  int maxGlobalVariableSize;
+
+  DeviceMemCacheType localMemType;
+
+  int localMemSize;
+
   //TODO: Add missing
 
   Device(
@@ -192,6 +211,15 @@ class Device {
     this.dblFMA,
     this.dblCorrectlyRoundedDivideSqrt,
     this.dblSoftFloat,
+    this.globalMemCacheType,
+    this.globalMemCachelineSize,
+    this.globalMemCacheSize,
+    this.globalMemSize,
+    this.maxConstantBufferSize,
+    this.maxConstantArgs,
+    this.maxGlobalVariableSize,
+    this.localMemType,
+    this.localMemSize,
   );
 
   Map<String, dynamic> toJson() {
@@ -258,7 +286,16 @@ class Device {
       "dblRoundToInf": dblRoundToInf,
       "dblFMA": dblFMA,
       "dblCorrectlyRoundedDivideSqrt": dblCorrectlyRoundedDivideSqrt,
-      "dblSoftFloat": dblSoftFloat
+      "dblSoftFloat": dblSoftFloat,
+      "globalMemCacheType": globalMemCacheType,
+      "globalMemCachelineSize": globalMemCachelineSize,
+      "globalMemCacheSize": globalMemCacheSize,
+      "globalMemSize": globalMemSize,
+      "maxConstantBufferSize": maxConstantBufferSize,
+      "maxConstantArgs": maxConstantArgs,
+      "maxGlobalVariableSize": maxGlobalVariableSize,
+      "localMemType": localMemType,
+      "localMemSize": localMemSize
     };
   }
 
@@ -502,6 +539,43 @@ Device createDevice(ffi.Pointer<clDeviceIdStruct> device, OpenCL dcl) {
       (doubleFPConfig & CL_FP_CORRECTLY_ROUNDED_DIVIDE_SQRT) != 0;
   bool dblSoftFloat = (doubleFPConfig & CL_FP_SOFT_FLOAT) != 0;
 
+  dcl.clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_CACHE_TYPE,
+      ffi.sizeOf<ffi.Uint32>(), uintbuf.cast(), outSize);
+  DeviceMemCacheType globalMemCacheType =
+      DeviceMemCacheType.values[uintbuf.value];
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE,
+      ffi.sizeOf<ffi.Int32>(), uintbuf.cast(), outSize);
+  int globalMemCachelineSize = uintbuf.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,
+      ffi.sizeOf<ffi.UnsignedLong>(), ulongbuf.cast(), outSize);
+  int globalMemCacheSize = ulongbuf.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_SIZE,
+      ffi.sizeOf<ffi.UnsignedLong>(), ulongbuf.cast(), outSize);
+  int globalMemSize = ulongbuf.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE,
+      ffi.sizeOf<ffi.UnsignedLong>(), ulongbuf.cast(), outSize);
+  int maxConstantBufferSize = ulongbuf.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_MAX_CONSTANT_ARGS,
+      ffi.sizeOf<ffi.Int32>(), uintbuf.cast(), outSize);
+  int maxConstantArgs = uintbuf.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_MAX_GLOBAL_VARIABLE_SIZE,
+      ffi.sizeOf<ffi.Size>(), size_tBuffer.cast(), outSize);
+  int maxGlobalVariableSize = size_tBuffer.value;
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_LOCAL_MEM_TYPE,
+      ffi.sizeOf<ffi.Uint32>(), uintbuf.cast(), outSize);
+  DeviceMemCacheType localMemType = DeviceMemCacheType.values[uintbuf.value];
+
+  dcl.clGetDeviceInfo(device, CL_DEVICE_LOCAL_MEM_SIZE,
+      ffi.sizeOf<ffi.UnsignedLong>(), ulongbuf.cast(), outSize);
+  int localMemSize = ulongbuf.value;
+
   ffilib.calloc.free(strbuf);
   ffilib.calloc.free(outSize);
   ffilib.calloc.free(ulongbuf);
@@ -573,5 +647,14 @@ Device createDevice(ffi.Pointer<clDeviceIdStruct> device, OpenCL dcl) {
       dblRoundToInf,
       dblFMA,
       dblCorrectlyRoundedDivideSqrt,
-      dblSoftFloat);
+      dblSoftFloat,
+      globalMemCacheType,
+      globalMemCachelineSize,
+      globalMemCacheSize,
+      globalMemSize,
+      maxConstantBufferSize,
+      maxConstantArgs,
+      maxGlobalVariableSize,
+      localMemType,
+      localMemSize);
 }

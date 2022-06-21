@@ -93,7 +93,7 @@ class CommandQueue {
         eventWaitList.length,
         event_wait_list,
         event);
-    print("errcode : $errcode_ret");
+    
     assert(errcode_ret == CL_SUCCESS);
 
     Event? eventObj;
@@ -117,16 +117,47 @@ class CommandQueue {
     return eventObj;
   }
 
-/*typedef clEnqueueReadBuffer_c =  ffi.Int32 Function(
-  ffi.Pointer<clCommandQueueStruct> command_queue,
-    ffi.Pointer<clMemStruct> buffer,
-    ffi.Bool blocking_read,
-    ffi.Size offset,
-    ffi.Size size,
-    ffi.Pointer<ffi.Void> ptr,
-    ffi.UnsignedInt num_events_in_wait_list,
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list,
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event);*/
+  int enqueueWaitForEvents(
+    List<Event> eventWaitList,
+  ) {
+    if (eventWaitList.isEmpty) {
+      throw ArgumentError("empty event wait list");
+    }
+    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list;
+
+    event_wait_list =
+        ffilib.calloc<ffi.Pointer<clEventStruct>>(eventWaitList.length);
+
+    for (int i = 0; i < eventWaitList.length; ++i) {
+      event_wait_list[i] = eventWaitList[i].event;
+    }
+
+    int errcode_ret = dcl.clEnqueueWaitForEvents(
+        this.commandQueue, eventWaitList.length, event_wait_list);
+    assert(errcode_ret == CL_SUCCESS);
+
+    ffilib.calloc.free(event_wait_list);
+
+    return errcode_ret;
+  }
+
+  Event enqueueMarker() {
+    ffi.Pointer<ffi.Pointer<clEventStruct>> event;
+    event = ffilib.calloc<ffi.Pointer<clEventStruct>>();
+    int errcode_ret = dcl.clEnqueueMarker(this.commandQueue, event);
+    assert(errcode_ret == CL_SUCCESS);
+    Event eventObj;
+    eventObj = Event(event.value, dcl);
+    ffilib.calloc.free(event);
+    return eventObj;
+  }
+
+  int enqueueBarrier() {
+    int errcode_ret = dcl.clEnqueueBarrier(this.commandQueue);
+    assert(errcode_ret == CL_SUCCESS);
+    return errcode_ret;
+  }
+
   Event? _enqueueReadWriteBufferCommon(Mem buffer, int offset, int size,
       NativeBuffer ptr, clEnqueueReadBuffer_dart function,
       {bool createEvent = false,

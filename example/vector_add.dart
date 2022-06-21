@@ -42,7 +42,7 @@ void main() {
       context.createBuffer(4 * LIST_SIZE, kernelRead: false, kernelWrite: true, hostRead: true);
 
   Program vAddProg = context.createProgramWithSource([vAdd_kernel]);
-  vAddProg.buildProgram(platforms[0].devices, "");
+  vAddProg.buildProgram(platforms[0].devices, "",[]);
   Kernel vAddKernel = vAddProg.createKernel("vector_add");
   vAddKernel.setKernelArgMem(0, aMem);
   vAddKernel.setKernelArgMem(1, bMem);
