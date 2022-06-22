@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -38,8 +37,15 @@ const SIZEOF_FLOAT = 4;
 void main() {
   final OpenCL cl = OpenCL();
   List<Platform> platforms = cl.getPlatforms();
-  Context context = cl.createContext(platforms[0].devices);
-  CommandQueue queue = context.createCommandQueue(platforms[0].devices[0]);
+    // get first platform with at least one gpu device.
+  Platform gpuPlatform = platforms.firstWhere((platform) =>
+      platform.devices.any((device) => device.type == DeviceType.GPU));
+  //get the first gpu device
+  Device gpuDevice =
+      gpuPlatform.devices.firstWhere((device) => device.type == DeviceType.GPU);
+  print("executing on ${gpuDevice.name}");
+  Context context = cl.createContext([gpuDevice]);
+  CommandQueue queue = context.createCommandQueue(gpuDevice);
   NativeBuffer matBuf = NativeBuffer(MAT_COLUMNS * MAT_ROWS * SIZEOF_FLOAT);
   NativeBuffer vecBuf = NativeBuffer(MAT_COLUMNS * SIZEOF_FLOAT);
   NativeBuffer outBuf = NativeBuffer(MAT_ROWS * SIZEOF_FLOAT);
@@ -67,7 +73,7 @@ void main() {
   Program vAddProg = context.createProgramWithSource([vMatMulVecKern]);
   List<String> buildLogs = [];
   int buildRet = vAddProg.buildProgram(
-      platforms[0].devices, "", buildLogs);
+      [gpuDevice], "", buildLogs);
   if (buildRet == CL_BUILD_PROGRAM_FAILURE) {
     print(buildLogs);
   }

@@ -12,39 +12,34 @@ and the Flutter guide for
 -->
 # OpenCL for Dart
 
-This is a wrapper of the OpenCL library for the Dart programming language.
+This is a wrapper of the OpenCL library for the Dart programming language, written in pure Dart.
 
-It is tailored toward desktop environments, currently tested only for linux.
+It is tailored toward desktop environments, currently tested only under Linux machine.
+
+Implemented features:
+
+1) Partial device & platform query
+2) Creating and building opencl program.
+3) Executing kernels.
+
+Be sure it can run a simple vector-add program.
 
 Currently under development. WIP.
-
-Implemented features: partial device & platform query.
-
-Can run a simple vector add program.
 
 ## Features
 
 It can query information about your computing platforms, such as your GPU.
+It can compile and execute kernels on your GPU.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Do not use it yet, unless you are willing to contribute by testing this package and provide feedback
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-final OpenCL cl = OpenCL();
-List<Platform> platforms = cl.getPlatforms();
-```
+See example/ directory.
 
 ## Additional information
 
 Any help is welcomed!
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.

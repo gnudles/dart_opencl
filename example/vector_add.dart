@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:opencl/opencl.dart';
@@ -15,15 +14,24 @@ __kernel void vector_add(__global const int *A, __global const int *B, __global 
 }
 """;
 const LIST_SIZE = 1024;
+const SIZEOF_INT32 = 4;
+
 void main() {
   final OpenCL cl = OpenCL();
   List<Platform> platforms = cl.getPlatforms();
+  // get first platform with at least one gpu device.
+  Platform gpuPlatform = platforms.firstWhere((platform) =>
+      platform.devices.any((device) => device.type == DeviceType.GPU));
+  //get the first gpu device
+  Device gpuDevice =
+      gpuPlatform.devices.firstWhere((device) => device.type == DeviceType.GPU);
+  print("executing on ${gpuDevice.name}");
 
-  Context context = cl.createContext(platforms[0].devices);
-  CommandQueue queue = context.createCommandQueue(platforms[0].devices[0]);
-  NativeBuffer aBuf = NativeBuffer(4 * LIST_SIZE);
-  NativeBuffer bBuf = NativeBuffer(4 * LIST_SIZE);
-  NativeBuffer cBuf = NativeBuffer(4 * LIST_SIZE);
+  Context context = cl.createContext([gpuDevice]);
+  CommandQueue queue = context.createCommandQueue(gpuDevice);
+  NativeBuffer aBuf = NativeBuffer(SIZEOF_INT32 * LIST_SIZE);
+  NativeBuffer bBuf = NativeBuffer(SIZEOF_INT32 * LIST_SIZE);
+  NativeBuffer cBuf = NativeBuffer(SIZEOF_INT32 * LIST_SIZE);
   Int32List aList = aBuf.byteBuffer.asInt32List();
   Int32List bList = bBuf.byteBuffer.asInt32List();
   Int32List cList = cBuf.byteBuffer.asInt32List();
@@ -34,15 +42,15 @@ void main() {
   }
   print(aList);
   print(bList);
-  Mem aMem = context.createBuffer(4 * LIST_SIZE,
+  Mem aMem = context.createBuffer(SIZEOF_INT32 * LIST_SIZE,
       hostData: aBuf, onlyCopy: true, kernelRead: true, kernelWrite: false);
-  Mem bMem = context.createBuffer(4 * LIST_SIZE,
+  Mem bMem = context.createBuffer(SIZEOF_INT32 * LIST_SIZE,
       hostData: bBuf, onlyCopy: true, kernelRead: true, kernelWrite: false);
-  Mem cMem =
-      context.createBuffer(4 * LIST_SIZE, kernelRead: false, kernelWrite: true, hostRead: true);
+  Mem cMem = context.createBuffer(SIZEOF_INT32 * LIST_SIZE,
+      kernelRead: false, kernelWrite: true, hostRead: true);
 
   Program vAddProg = context.createProgramWithSource([vAdd_kernel]);
-  vAddProg.buildProgram(platforms[0].devices, "",[]);
+  vAddProg.buildProgram([gpuDevice], "", []);
   Kernel vAddKernel = vAddProg.createKernel("vector_add");
   vAddKernel.setKernelArgMem(0, aMem);
   vAddKernel.setKernelArgMem(1, bMem);

@@ -6,11 +6,11 @@ import 'package:opencl/src/context.dart';
 import 'package:opencl/src/device.dart';
 import 'package:opencl/src/platform.dart';
 import 'package:opencl/src/ffi_types.dart';
-import 'package:path/path.dart' as path;
+
 import 'package:ffi/ffi.dart' as ffilib;
 
 /// OpenCL
-
+/*
 const androidLibPaths = [
   "/system/lib64/libOpenCL.so",
   "/system/vendor/lib64/libOpenCL.so",
@@ -23,7 +23,7 @@ const androidLibPaths = [
   "/system/vendor/lib/libPVROCL.so",
   "/data/data/org.pocl.libs/files/lib/libpocl.so",
   "libOpenCL.so"
-];
+];*/
 
 class OpenCL {
   late final ffi.DynamicLibrary openCLDynLib;
@@ -87,6 +87,7 @@ class OpenCL {
       libraryPath = 'OpenCL.dll';
     }
     bool successfullyLoaded = false;
+    /*
     if (io.Platform.isAndroid) {
       for (String path in androidLibPaths) {
         try {
@@ -95,7 +96,7 @@ class OpenCL {
           break;
         } catch (e) {}
       }
-    }
+    }*/
 
     try {
       if (!successfullyLoaded) {
