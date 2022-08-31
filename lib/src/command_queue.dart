@@ -1,15 +1,24 @@
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/src/event.dart';
 import 'package:opencl/opencl.dart';
+import 'package:opencl/src/native_cl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
 
 import 'package:ffi/ffi.dart' as ffilib;
 
+typedef clEnqueueReadBuffer_type = int Function(
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    int blocking_write,
+    int offset,
+    int size,
+    ffi.Pointer<ffi.Void> ptr,
+    int num_events_in_wait_list,
+    ffi.Pointer<cl_event> event_wait_list,
+    ffi.Pointer<cl_event> event);
 class CommandQueue {
-  ffi.Pointer<clCommandQueueStruct> commandQueue;
+  cl_command_queue commandQueue;
   OpenCL dcl;
   CommandQueue(this.commandQueue, this.dcl);
   void retain() {
@@ -71,17 +80,17 @@ class CommandQueue {
       }
     }
 
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list = ffi.nullptr;
+    ffi.Pointer<cl_event> event_wait_list = ffi.nullptr;
     if (eventWaitList.isNotEmpty) {
       event_wait_list =
-          ffilib.calloc<ffi.Pointer<clEventStruct>>(eventWaitList.length);
+          ffilib.calloc<cl_event>(eventWaitList.length);
       for (int i = 0; i < eventWaitList.length; ++i) {
         event_wait_list[i] = eventWaitList[i].event;
       }
     }
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event = ffi.nullptr;
+    ffi.Pointer<cl_event> event = ffi.nullptr;
     if (createEvent) {
-      event = ffilib.calloc<ffi.Pointer<clEventStruct>>();
+      event = ffilib.calloc<cl_event>();
     }
     int errcode_ret = dcl.clEnqueueNDRangeKernel(
         this.commandQueue,
@@ -123,10 +132,10 @@ class CommandQueue {
     if (eventWaitList.isEmpty) {
       throw ArgumentError("empty event wait list");
     }
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list;
+    ffi.Pointer<cl_event> event_wait_list;
 
     event_wait_list =
-        ffilib.calloc<ffi.Pointer<clEventStruct>>(eventWaitList.length);
+        ffilib.calloc<cl_event>(eventWaitList.length);
 
     for (int i = 0; i < eventWaitList.length; ++i) {
       event_wait_list[i] = eventWaitList[i].event;
@@ -142,8 +151,8 @@ class CommandQueue {
   }
 
   Event enqueueMarker() {
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event;
-    event = ffilib.calloc<ffi.Pointer<clEventStruct>>();
+    ffi.Pointer<cl_event> event;
+    event = ffilib.calloc<cl_event>();
     int errcode_ret = dcl.clEnqueueMarker(this.commandQueue, event);
     assert(errcode_ret == CL_SUCCESS);
     Event eventObj;
@@ -159,23 +168,23 @@ class CommandQueue {
   }
 
   Event? _enqueueReadWriteBufferCommon(Mem buffer, int offset, int size,
-      NativeBuffer ptr, clEnqueueReadBuffer_dart function,
+      NativeBuffer ptr, clEnqueueReadBuffer_type function,
       {bool createEvent = false,
       List<Event> eventWaitList = const [],
       bool blocking = false}) {
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event_wait_list = ffi.nullptr;
+    ffi.Pointer<cl_event> event_wait_list = ffi.nullptr;
     if (eventWaitList.isNotEmpty) {
       event_wait_list =
-          ffilib.calloc<ffi.Pointer<clEventStruct>>(eventWaitList.length);
+          ffilib.calloc<cl_event>(eventWaitList.length);
       for (int i = 0; i < eventWaitList.length; ++i) {
         event_wait_list[i] = eventWaitList[i].event;
       }
     }
-    ffi.Pointer<ffi.Pointer<clEventStruct>> event = ffi.nullptr;
+    ffi.Pointer<cl_event> event = ffi.nullptr;
     if (createEvent) {
-      event = ffilib.calloc<ffi.Pointer<clEventStruct>>();
+      event = ffilib.calloc<cl_event>();
     }
-    int errcode_ret = function(this.commandQueue, buffer.mem, blocking, offset,
+    int errcode_ret = function(this.commandQueue, buffer.mem, blocking?1:0, offset,
         size, ptr.ptr.cast(), eventWaitList.length, event_wait_list, event);
     print("read errcode : $errcode_ret");
     assert(errcode_ret == CL_SUCCESS);

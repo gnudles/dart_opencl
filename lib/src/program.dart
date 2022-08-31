@@ -1,17 +1,17 @@
 import 'package:opencl/src/command_queue.dart';
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/src/device.dart';
 import 'package:opencl/opencl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
+
 
 import 'package:ffi/ffi.dart' as ffilib;
 import 'package:opencl/src/kernel.dart';
+import 'package:opencl/src/native_cl.dart';
 
 class Program {
-  ffi.Pointer<clProgramStruct> program;
+  cl_program program;
   OpenCL dcl;
   Program(this.program, this.dcl);
   void retain() {
@@ -29,8 +29,8 @@ class Program {
   /// The build logs will be appended to the supplied buildLogs list.
   int buildProgram(
       List<Device> devices, String options, List<String> buildLogs) {
-    ffi.Pointer<ffi.Pointer<clDeviceIdStruct>> devices_handles =
-        ffilib.calloc<ffi.Pointer<clDeviceIdStruct>>(devices.length);
+    ffi.Pointer<cl_device_id> devices_handles =
+        ffilib.calloc<cl_device_id>(devices.length);
     for (int i = 0; i < devices.length; ++i) {
       devices_handles[i] = devices[i].device;
     }
@@ -62,7 +62,7 @@ class Program {
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
     ffi.Pointer<ffilib.Utf8> nativeName = kernelName.toNativeUtf8();
 
-    ffi.Pointer<clKernelStruct> kernel =
+    cl_kernel kernel =
         dcl.clCreateKernel(this.program, nativeName.cast(), errcode_ret);
     assert(errcode_ret.value == CL_SUCCESS);
     ffilib.calloc.free(errcode_ret);

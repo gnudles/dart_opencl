@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:opencl/opencl.dart';
@@ -17,7 +18,14 @@ __kernel void vector_add(__global const int4 *A, __global const int4 *B, __globa
 """;
 const LIST_SIZE = 24 * 256 * 1024;
 void main() {
-  final OpenCL cl = OpenCL();
+  DynamicLibrary libraryCL;
+  try {
+    libraryCL = OpenCL.openDynLib();
+  } catch (e) {
+    print("could not load OpenCL dynamic library");
+    return;
+  }
+  final OpenCL cl = OpenCL(libraryCL);
   List<Platform> platforms = cl.getPlatforms();
   platforms.forEach((platform) {
     print("Platform ${platform.name}:");

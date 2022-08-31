@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -35,9 +36,16 @@ const MAT_COLUMNS = 200;
 const MAT_ROWS = 200;
 const SIZEOF_FLOAT = 4;
 void main() {
-  final OpenCL cl = OpenCL();
+  DynamicLibrary libraryCL;
+  try {
+    libraryCL = OpenCL.openDynLib();
+  } catch (e) {
+    print("could not load OpenCL dynamic library");
+    return;
+  }
+  final OpenCL cl = OpenCL(libraryCL);
   List<Platform> platforms = cl.getPlatforms();
-    // get first platform with at least one gpu device.
+  // get first platform with at least one gpu device.
   Platform gpuPlatform = platforms.firstWhere((platform) =>
       platform.devices.any((device) => device.type == DeviceType.GPU));
   //get the first gpu device
@@ -72,8 +80,7 @@ void main() {
 
   Program vAddProg = context.createProgramWithSource([vMatMulVecKern]);
   List<String> buildLogs = [];
-  int buildRet = vAddProg.buildProgram(
-      [gpuDevice], "", buildLogs);
+  int buildRet = vAddProg.buildProgram([gpuDevice], "", buildLogs);
   if (buildRet == CL_BUILD_PROGRAM_FAILURE) {
     print(buildLogs);
   }

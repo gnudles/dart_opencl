@@ -1,15 +1,15 @@
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/src/device.dart';
 import 'package:opencl/opencl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
+
 
 import 'package:ffi/ffi.dart' as ffilib;
+import 'package:opencl/src/native_cl.dart';
 
 class Platform {
-  ffi.Pointer<clPlatformIdStruct> platform;
+  cl_platform_id platform;
   OpenCL dcl;
   List<Device> devices;
   String profile;
@@ -25,12 +25,12 @@ class Platform {
       this.name, this.vendor, this.extensions, this.hostTimerResolution);
 }
 
-Platform createPlatform(ffi.Pointer<clPlatformIdStruct> platform, OpenCL dcl) {
+Platform createPlatform(cl_platform_id platform, OpenCL dcl) {
   ffi.Pointer<ffi.Uint32> num_devices = ffilib.calloc<ffi.Uint32>();
   dcl.clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, ffi.nullptr, num_devices);
 
   var devices_list =
-      ffilib.calloc<ffi.Pointer<clDeviceIdStruct>>(num_devices.value);
+      ffilib.calloc<cl_device_id>(num_devices.value);
   dcl.clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, num_devices.value,
       devices_list, num_devices);
   var devices = List.generate(

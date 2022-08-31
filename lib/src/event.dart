@@ -1,17 +1,16 @@
 import 'package:opencl/src/command_queue.dart';
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/src/device.dart';
 import 'package:opencl/opencl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
 
 import 'package:ffi/ffi.dart' as ffilib;
+import 'package:opencl/src/native_cl.dart';
 
 class Event
 {
-  ffi.Pointer<clEventStruct> event;
+  cl_event event;
   OpenCL dcl;
   Event(this.event, this.dcl);
   void retain() {

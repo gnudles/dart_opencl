@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:opencl/opencl.dart';
@@ -17,7 +18,15 @@ const LIST_SIZE = 1024;
 const SIZEOF_INT32 = 4;
 
 void main() {
-  final OpenCL cl = OpenCL();
+  DynamicLibrary libraryCL;
+  try {
+    libraryCL = OpenCL.openDynLib();
+  } catch (e) {
+    print("could not load OpenCL dynamic library");
+    return;
+  }
+  final OpenCL cl = OpenCL(libraryCL);
+  
   List<Platform> platforms = cl.getPlatforms();
   // get first platform with at least one gpu device.
   Platform gpuPlatform = platforms.firstWhere((platform) =>

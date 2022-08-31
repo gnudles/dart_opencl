@@ -1,19 +1,18 @@
 import 'package:opencl/src/command_queue.dart';
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/src/device.dart';
 import 'package:opencl/opencl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
 
 import 'package:ffi/ffi.dart' as ffilib;
 import 'package:opencl/src/mem.dart';
 import 'package:opencl/src/native_buffer.dart';
+import 'package:opencl/src/native_cl.dart';
 import 'package:opencl/src/program.dart';
 
 class Context {
-  ffi.Pointer<clContextStruct> context;
+  cl_context context;
   OpenCL dcl;
   Context(this.context, this.dcl);
 
@@ -30,7 +29,7 @@ class Context {
 
   CommandQueue createCommandQueue(Device device, {bool outOfOrder = false}) {
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
-    ffi.Pointer<ffi.UnsignedLong> properties =
+    ffi.Pointer<ffi.Uint64> properties =
         ffilib.calloc<ffi.UnsignedLong>(3).cast();
     int last_property = 0;
     if (outOfOrder) {
@@ -88,7 +87,7 @@ class Context {
     }
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
 
-    ffi.Pointer<clMemStruct> memPtr = dcl.clCreateBuffer(this.context, flags,
+    cl_mem memPtr = dcl.clCreateBuffer(this.context, flags,
         size, hostData?.ptr.cast() ?? ffi.nullptr, errcode_ret);
     assert(errcode_ret.value == CL_SUCCESS);
 
@@ -111,7 +110,7 @@ class Context {
     }
     ffi.Pointer<ffi.Int32> errcode_ret = ffilib.calloc<ffi.Int32>();
 
-    ffi.Pointer<clProgramStruct> program = dcl.clCreateProgramWithSource(
+    cl_program program = dcl.clCreateProgramWithSource(
         this.context, count, stringsPtr.cast(), lengthsPtr, errcode_ret);
 
     assert(errcode_ret.value == CL_SUCCESS);

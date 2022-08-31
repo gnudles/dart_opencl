@@ -1,11 +1,9 @@
-import 'package:opencl/src/ffi_types.dart';
 import 'package:opencl/opencl.dart';
 
 import 'dart:ffi' as ffi;
 
-import 'package:opencl/src/constants.dart';
-
 import 'package:ffi/ffi.dart' as ffilib;
+import 'package:opencl/src/native_cl.dart';
 
 enum DeviceType { CPU, GPU, ACCEL, CUSTOM }
 
@@ -25,7 +23,7 @@ const deviceTypeMap = {
 enum DeviceMemCacheType { None, ReadOnlyCache, ReadWriteCache }
 
 class Device {
-  ffi.Pointer<clDeviceIdStruct> device;
+  cl_device_id device;
   OpenCL dcl;
   DeviceType type;
   String profile;
@@ -300,7 +298,7 @@ class Device {
   }
 
   DeviceAndHostTimer getDeviceAndHostTimer() {
-    ffi.Pointer<ffi.UnsignedLong> deviceHostBuf =
+    ffi.Pointer<ffi.Uint64> deviceHostBuf =
         ffilib.calloc<ffi.UnsignedLong>(2).cast();
     int ret = dcl.clGetDeviceAndHostTimer(
         device, deviceHostBuf, deviceHostBuf.elementAt(1));
@@ -312,7 +310,7 @@ class Device {
   }
 }
 
-Device createDevice(ffi.Pointer<clDeviceIdStruct> device, OpenCL dcl) {
+Device createDevice(cl_device_id device, OpenCL dcl) {
   const strBufferSize = 4096;
   ffi.Pointer<ffilib.Utf8> strbuf =
       ffilib.calloc<ffi.Int8>(strBufferSize).cast();
